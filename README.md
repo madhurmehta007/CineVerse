@@ -10,12 +10,9 @@ A polished movie showcase app demonstrating Kotlin Multiplatform (KMP) library i
 - **Favorites** - Real-time synced favorites across all screens with local persistence
 - **Long-press Animations** - Card lift effect with info overlay on long press
 
-## Screenshots
+## Video Demo
 
-<!-- Add your screenshots here -->
-| Movies Grid | Movie Details | Favorites |
-|-------------|---------------|-----------|
-| ![Grid](screenshots/grid.png) | ![Detail](screenshots/detail.png) | ![Favorites](screenshots/favorites.png) |
+https://github.com/user-attachments/assets/219ac676-6f5b-448e-8747-be95ebecc8ee
 
 ## Architecture
 
