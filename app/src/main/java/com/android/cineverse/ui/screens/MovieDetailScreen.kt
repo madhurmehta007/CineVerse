@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.android.cineverse.ui.components.AnimatedPressButton
 import com.android.cineverse.ui.components.LocalAnimatedVisibilityScope
@@ -80,7 +81,7 @@ fun MovieDetailScreen(
     var showContent by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(550)
+        delay(550) // Shared element transition duration - 150ms
         showContent = true
     }
 
@@ -90,7 +91,7 @@ fun MovieDetailScreen(
         ) { padding ->
             if (sharedTransitionScope != null && animatedContentScope != null) {
                 with(sharedTransitionScope) {
-                    Column(
+                    Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .sharedBounds(
@@ -100,13 +101,12 @@ fun MovieDetailScreen(
                                 exit = fadeOut()
                             )
                             .verticalScroll(rememberScrollState())
-                            .padding(bottom = 32.dp)
                     ) {
-                        // Header Image with shared element transition
+                        // Full-screen poster image
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(400.dp)
+                                .height(600.dp)
                         ) {
                             AsyncImage(
                                 model = movie.posterUrl,
@@ -120,19 +120,19 @@ fun MovieDetailScreen(
                                     )
                             )
 
-                            // Gradient Scrim
+                            // Dark gradient at bottom for card overlay
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .background(
                                         Brush.verticalGradient(
                                             colors = listOf(Color.Transparent, DarkPurple),
-                                            startY = 300f
+                                            startY = 400f
                                         )
                                     )
                             )
 
-                            // Toolbar overlay
+                            // Toolbar overlay at top
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -162,120 +162,173 @@ fun MovieDetailScreen(
                                 }
                             }
 
-                            // Rating Element
+                            // Rating badge in top-left
                             Surface(
                                 color = Color.Black.copy(alpha = 0.6f),
                                 shape = RoundedCornerShape(16.dp),
                                 modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(start = 16.dp, bottom = 16.dp)
+                                    .align(Alignment.TopStart)
+                                    .padding(start = 16.dp, top = 120.dp)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                                 ) {
-                                    Icon(Icons.Default.Star, contentDescription = null, tint = Color.Yellow, modifier = Modifier.size(16.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(text = movie.rating.toString(), color = Color.White, fontWeight = FontWeight.Bold)
+                                    Icon(Icons.Default.Star, contentDescription = null, tint = Color.Yellow, modifier = Modifier.size(20.dp))
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = movie.rating.toString(),
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp
+                                    )
+                                }
+                            }
+
+                            // Bottom card with movie info
+                            AnimatedVisibility(
+                                visible = showContent,
+                                modifier = Modifier.align(Alignment.BottomCenter),
+                                enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { it / 3 }
+                            ) {
+                                Surface(
+                                    color = CardBackground.copy(alpha = 0.95f),
+                                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(24.dp)
+                                    ) {
+                                        // Title
+                                        Text(
+                                            text = movie.title,
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold
+                                        )
+
+                                        Spacer(modifier = Modifier.height(12.dp))
+
+                                        // Metadata row: year, duration, genre
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                        ) {
+                                            // Year
+                                            Text(
+                                                text = movie.releaseDate.take(4),
+                                                color = Color.LightGray,
+                                                fontSize = 14.sp
+                                            )
+
+                                            // Dot separator
+                                            Text(
+                                                text = "•",
+                                                color = Color.Gray,
+                                                fontSize = 14.sp
+                                            )
+
+                                            // Duration
+                                            Text(
+                                                text = movie.duration,
+                                                color = Color.LightGray,
+                                                fontSize = 14.sp
+                                            )
+
+                                            // Genre tag
+                                            movie.genres.firstOrNull()?.let { genre ->
+                                                Surface(
+                                                    color = AccentPink.copy(alpha = 0.2f),
+                                                    shape = RoundedCornerShape(20.dp)
+                                                ) {
+                                                    Text(
+                                                        text = genre,
+                                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                                                        style = MaterialTheme.typography.labelMedium,
+                                                        color = AccentPink,
+                                                        fontWeight = FontWeight.SemiBold
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        Spacer(modifier = Modifier.height(20.dp))
+
+                                        // Play Now button with pink gradient
+                                        AnimatedPressButton(
+                                            onClick = { /* Play action */ },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(56.dp)
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .background(
+                                                        brush = Brush.horizontalGradient(
+                                                            listOf(GradientStart, GradientEnd)
+                                                        ),
+                                                        shape = RoundedCornerShape(28.dp)
+                                                    )
+                                                    .clip(RoundedCornerShape(28.dp)),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                                    Icon(
+                                                        Icons.Default.PlayArrow,
+                                                        contentDescription = null,
+                                                        tint = Color.White,
+                                                        modifier = Modifier.size(28.dp)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(8.dp))
+                                                    Text(
+                                                        "Play Now",
+                                                        color = Color.White,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.titleMedium,
+                                                        fontSize = 18.sp
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
 
-                        // Info Section
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = movie.title,
-                                style = MaterialTheme.typography.headlineMedium,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.sharedElement(
-                                    rememberSharedContentState(key = "title-${movie.id}"),
-                                    animatedVisibilityScope = animatedContentScope
-                                )
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = movie.releaseDate.take(4), color = Color.LightGray)
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.LightGray, modifier = Modifier.size(16.dp))
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(text = movie.duration, color = Color.LightGray)
-                                Spacer(modifier = Modifier.width(16.dp))
-
-                                // Genre bubbles
-                                FlowRow(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    movie.genres.forEach { genre ->
-                                        Surface(
-                                            color = CardBackground,
-                                            shape = RoundedCornerShape(16.dp)
-                                        ) {
-                                            Text(
-                                                text = genre,
-                                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                                style = MaterialTheme.typography.labelSmall,
-                                                color = Color.White
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            // Play Button with press animation
+                        // Synopsis section below the image
+                        Column(
+                            modifier = Modifier
+                                .padding(top = 620.dp)
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 32.dp)
+                        ) {
                             AnimatedVisibility(
                                 visible = showContent,
-                                enter = fadeIn(tween(500)) +
-                                        slideInVertically(tween(500)) { it / 3 }
+                                enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { it / 4 }
                             ) {
-                                AnimatedPressButton(
-                                    onClick = { /* Play action */ },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(56.dp)
+                                Surface(
+                                    color = CardBackground,
+                                    shape = RoundedCornerShape(24.dp),
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(
-                                                brush = Brush.horizontalGradient(listOf(GradientStart, GradientEnd)),
-                                                shape = RoundedCornerShape(28.dp)
-                                            )
-                                            .clip(RoundedCornerShape(28.dp)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.White)
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text("Play Now", color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                                        }
+                                    Column(modifier = Modifier.padding(24.dp)) {
+                                        Text(
+                                            text = "Synopsis",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                        Text(
+                                            text = movie.synopsis,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = Color.LightGray,
+                                            lineHeight = 22.sp
+                                        )
                                     }
                                 }
                             }
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            // Staggered Detail Sections
-                            AnimatedDetailSection(
-                                title = "Synopsis",
-                                content = movie.synopsis,
-                                visible = showContent
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            AnimatedDetailSection(
-                                title = "Director",
-                                content = movie.director,
-                                visible = showContent
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            AnimatedDetailSection(
-                                title = "Cast",
-                                content = movie.cast.joinToString(", "),
-                                visible = showContent
-                            )
                         }
                     }
                 }
@@ -292,42 +345,12 @@ fun MovieDetailScreen(
 }
 
 @Composable
-private fun AnimatedDetailSection(
-    title: String,
-    content: String,
-    visible: Boolean
-) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(tween(500)) +
-                slideInVertically(tween(500)) { it / 4 }
-    ) {
-        DetailSection(title, content)
-    }
-}
-
-@Composable
-private fun DetailSection(title: String, content: String) {
-    Surface(
-        color = CardBackground,
-        shape = RoundedCornerShape(24.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.padding(24.dp)) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium, color = Color.White, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = content, style = MaterialTheme.typography.bodyMedium, color = Color.LightGray, lineHeight = MaterialTheme.typography.bodyLarge.lineHeight)
-        }
-    }
-}
-
-@Composable
 private fun DetailScreenContent(
     movie: org.android.cineverse.shared.domain.model.Movie,
     onBackClick: () -> Unit,
     viewModel: AndroidMoviesViewModel
 ) {
-    // A fallback implementation that mirrors the structure of the animated version
+    // Fallback implementation
     Scaffold(
         containerColor = DarkPurple
     ) { padding ->
@@ -410,11 +433,27 @@ private fun DetailScreenContent(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                DetailSection("Synopsis", movie.synopsis)
-                Spacer(modifier = Modifier.height(16.dp))
-                DetailSection("Director", movie.director)
-                Spacer(modifier = Modifier.height(16.dp))
-                DetailSection("Cast", movie.cast.joinToString(", "))
+                Surface(
+                    color = CardBackground,
+                    shape = RoundedCornerShape(24.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Text(
+                            text = "Synopsis",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = movie.synopsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.LightGray,
+                            lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
+                        )
+                    }
+                }
             }
         }
     }
