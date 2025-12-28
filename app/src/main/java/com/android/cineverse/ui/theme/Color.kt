@@ -1,4 +1,4 @@
-package org.android.cineverse.ui.theme
+package com.android.cineverse.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

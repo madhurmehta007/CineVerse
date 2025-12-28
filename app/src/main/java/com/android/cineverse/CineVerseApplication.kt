@@ -1,7 +1,7 @@
-package org.android.cineverse
+package com.android.cineverse
 
 import android.app.Application
-import org.android.cineverse.di.appModule
+import com.android.cineverse.di.appModule
 import org.android.cineverse.shared.di.initKoin
 import org.koin.android.ext.koin.androidContext
 

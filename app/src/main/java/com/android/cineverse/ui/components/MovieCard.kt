@@ -46,11 +46,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.android.cineverse.ui.theme.AccentPink
 import kotlinx.coroutines.delay
-import org.android.cineverse.LocalAnimatedVisibilityScope
-import org.android.cineverse.LocalSharedTransitionScope
 import org.android.cineverse.shared.domain.model.Movie
-import org.android.cineverse.ui.theme.AccentPink
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -65,7 +63,7 @@ fun MovieCard(
     var showOverlay by remember { mutableStateOf(false) }
     
     val sharedTransitionScope = LocalSharedTransitionScope.current
-    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+    val animatedContentScope = LocalAnimatedVisibilityScope.current
     
     // Auto-hide overlay after delay
     LaunchedEffect(showOverlay) {
@@ -132,13 +130,13 @@ fun MovieCard(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Movie Poster with shared element
-            val posterModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+            val posterModifier = if (sharedTransitionScope != null && animatedContentScope != null) {
                 with(sharedTransitionScope) {
                     imageModifier
                         .fillMaxSize()
                         .sharedElement(
                             sharedContentState = rememberSharedContentState(key = "poster-${movie.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope
+                            animatedVisibilityScope = animatedContentScope
                         )
                 }
             } else {

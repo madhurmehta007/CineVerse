@@ -1,4 +1,4 @@
-package org.android.cineverse.di
+package com.android.cineverse.di
 
 import org.android.cineverse.shared.data.local.DatabaseDriverFactory
 import com.android.cineverse.ui.viewmodel.AndroidMoviesViewModel

@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.android.cineverse.ui.components.MovieCard
-import org.android.cineverse.ui.theme.DarkPurple
+import com.android.cineverse.ui.theme.DarkPurple
 import com.android.cineverse.ui.viewmodel.AndroidMoviesViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -54,7 +54,7 @@ fun FavoritesScreen(
                         onClick = onBackClick,
                         modifier = Modifier.clip(CircleShape).background(Color.White.copy(alpha = 0.1f))
                      ) {
-                         Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                      }
                      Text(
                         text = "Favorites",
@@ -88,7 +88,8 @@ fun FavoritesScreen(
                     MovieCard(
                         movie = movie,
                         onMovieClick = onMovieClick,
-                        onFavoriteClick = { viewModel.toggleFavorite(it) }
+                        onFavoriteClick = { viewModel.toggleFavorite(it) },
+                        modifier = Modifier.animateItem()
                     )
                 }
             }

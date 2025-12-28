@@ -2,6 +2,7 @@ package com.android.cineverse.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -34,10 +35,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.android.cineverse.ui.components.MovieCard
-import org.android.cineverse.ui.theme.AccentPink
-import org.android.cineverse.ui.theme.CardBackground
-import org.android.cineverse.ui.theme.DarkPurple
 import com.android.cineverse.ui.viewmodel.AndroidMoviesViewModel
+import com.android.cineverse.ui.theme.AccentPink
+import com.android.cineverse.ui.theme.CardBackground
+import com.android.cineverse.ui.theme.DarkPurple
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -104,25 +105,37 @@ fun MoviesGridScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = padding.calculateTopPadding() + 8.dp,
-                bottom = 16.dp
-            ),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(movies, key = { it.id }) { movie ->
-                MovieCard(
-                    movie = movie,
-                    onMovieClick = onMovieClick,
-                    onFavoriteClick = { viewModel.toggleFavorite(it) }
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = padding.calculateTopPadding() + 8.dp,
+                    bottom = 16.dp
+                ),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(movies, key = { it.id }) { movie ->
+                    MovieCard(
+                        movie = movie,
+                        onMovieClick = onMovieClick,
+                        onFavoriteClick = { viewModel.toggleFavorite(it) },
+                        modifier = Modifier.animateItem()
+                    )
+                }
+            }
+            
+            if (movies.isEmpty()) {
+                Text(
+                    text = if (searchQuery.isNotEmpty()) "No movies found" else "Loading...",
+                    color = Color.Gray,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
         }
     }
 }
+

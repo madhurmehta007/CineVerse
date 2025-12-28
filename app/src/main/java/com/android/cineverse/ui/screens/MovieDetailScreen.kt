@@ -24,7 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
@@ -52,15 +52,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.delay
-import org.android.cineverse.LocalAnimatedVisibilityScope
-import org.android.cineverse.LocalSharedTransitionScope
 import com.android.cineverse.ui.components.AnimatedPressButton
 import com.android.cineverse.ui.components.CineVerseAnimation
-import org.android.cineverse.ui.theme.AccentPink
-import org.android.cineverse.ui.theme.CardBackground
-import org.android.cineverse.ui.theme.DarkPurple
-import org.android.cineverse.ui.theme.GradientEnd
-import org.android.cineverse.ui.theme.GradientStart
+import com.android.cineverse.ui.components.LocalAnimatedVisibilityScope
+import com.android.cineverse.ui.components.LocalSharedTransitionScope
+import com.android.cineverse.ui.theme.AccentPink
+import com.android.cineverse.ui.theme.CardBackground
+import com.android.cineverse.ui.theme.DarkPurple
+import com.android.cineverse.ui.theme.GradientEnd
+import com.android.cineverse.ui.theme.GradientStart
 import com.android.cineverse.ui.viewmodel.AndroidMoviesViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -75,7 +75,7 @@ fun MovieDetailScreen(
     val movie = allMovies.find { it.id == movieId }
     
     val sharedTransitionScope = LocalSharedTransitionScope.current
-    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+    val animatedContentScope = LocalAnimatedVisibilityScope.current
 
     // Animation states for staggered reveal
     var showPlayButton by remember { mutableStateOf(false) }
@@ -112,13 +112,13 @@ fun MovieDetailScreen(
                         .height(400.dp)
                 ) {
                     // Shared element poster
-                    val posterModifier = if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                    val posterModifier = if (sharedTransitionScope != null && animatedContentScope != null) {
                         with(sharedTransitionScope) {
                             Modifier
                                 .fillMaxSize()
                                 .sharedElement(
                                     sharedContentState = rememberSharedContentState(key = "poster-${movie.id}"),
-                                    animatedVisibilityScope = animatedVisibilityScope
+                                    animatedVisibilityScope = animatedContentScope
                                 )
                         }
                     } else {
@@ -157,7 +157,7 @@ fun MovieDetailScreen(
                                 .clip(CircleShape)
                                 .background(Color.Black.copy(alpha = 0.5f))
                         ) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                         }
 
                         IconButton(
