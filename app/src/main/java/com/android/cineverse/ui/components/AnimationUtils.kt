@@ -13,8 +13,10 @@ object CineVerseAnimation {
     
     // Durations
     const val QUICK = 150
+    const val FAST = 200
     const val STANDARD = 300
     const val EMPHASIZED = 400
+    const val SHARED_ELEMENT_TRANSITION_DURATION = 700
     
     // Card animations
     const val CARD_LIFT_SCALE = 1.03f

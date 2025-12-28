@@ -9,8 +9,6 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,7 +19,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.android.cineverse.ui.components.CineVerseAnimation
 import com.android.cineverse.ui.components.LocalAnimatedVisibilityScope
 import com.android.cineverse.ui.components.LocalSharedTransitionScope
 import com.android.cineverse.ui.screens.FavoritesScreen
@@ -49,30 +46,10 @@ class MainActivity : ComponentActivity() {
                             NavHost(
                                 navController = navController,
                                 startDestination = "movies",
-                                enterTransition = {
-                                    slideInHorizontally(
-                                        animationSpec = tween(CineVerseAnimation.STANDARD),
-                                        initialOffsetX = { it }
-                                    ) + fadeIn(tween(CineVerseAnimation.STANDARD))
-                                },
-                                exitTransition = {
-                                    slideOutHorizontally(
-                                        animationSpec = tween(CineVerseAnimation.STANDARD),
-                                        targetOffsetX = { -it / 4 }
-                                    ) + fadeOut(tween(CineVerseAnimation.STANDARD))
-                                },
-                                popEnterTransition = {
-                                    slideInHorizontally(
-                                        animationSpec = tween(CineVerseAnimation.STANDARD),
-                                        initialOffsetX = { -it / 4 }
-                                    ) + fadeIn(tween(CineVerseAnimation.STANDARD))
-                                },
-                                popExitTransition = {
-                                    slideOutHorizontally(
-                                        animationSpec = tween(CineVerseAnimation.STANDARD),
-                                        targetOffsetX = { it }
-                                    ) + fadeOut(tween(CineVerseAnimation.STANDARD))
-                                }
+                                enterTransition = { fadeIn(tween(500)) },
+                                exitTransition = { fadeOut(tween(500)) },
+                                popEnterTransition = { fadeIn(tween(500)) },
+                                popExitTransition = { fadeOut(tween(500)) }
                             ) {
                                 composable("movies") {
                                     CompositionLocalProvider(
