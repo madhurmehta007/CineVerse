@@ -19,3 +19,34 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Suppress slf4j warning
+-dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# Keep Ktor classes
+-keep class io.ktor.** { *; }
+-dontwarn io.ktor.**
+
+# Keep Kotlinx Serialization
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt
+
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Keep project serializable classes
+-keep,includedescriptorclasses class org.android.cineverse.shared.**$$serializer { *; }
+-keepclassmembers class org.android.cineverse.shared.** {
+    *** Companion;
+}
+-keepclasseswithmembers class org.android.cineverse.shared.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Keep Koin
+-keep class org.koin.** { *; }
+-dontwarn org.koin.**
