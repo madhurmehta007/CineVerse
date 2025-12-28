@@ -81,7 +81,7 @@ fun MovieDetailScreen(
     var showContent by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(550) // Shared element transition duration - 150ms
+        delay(550)
         showContent = true
     }
 
@@ -192,9 +192,12 @@ fun MovieDetailScreen(
                                 enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { it / 3 }
                             ) {
                                 Surface(
-                                    color = CardBackground.copy(alpha = 0.95f),
-                                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-                                    modifier = Modifier.fillMaxWidth()
+                                    color = CardBackground,
+                                    shape = RoundedCornerShape(24.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp)
+                                        .padding(bottom = 28.dp)
                                 ) {
                                     Column(
                                         modifier = Modifier.padding(24.dp)
@@ -325,6 +328,64 @@ fun MovieDetailScreen(
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = Color.LightGray,
                                             lineHeight = 22.sp
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Director section
+                            AnimatedVisibility(
+                                visible = showContent,
+                                enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { it / 4 }
+                            ) {
+                                Surface(
+                                    color = CardBackground,
+                                    shape = RoundedCornerShape(24.dp),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Column(modifier = Modifier.padding(24.dp)) {
+                                        Text(
+                                            text = "Director",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                        Text(
+                                            text = movie.director,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = Color.LightGray
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Cast section
+                            AnimatedVisibility(
+                                visible = showContent,
+                                enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { it / 4 }
+                            ) {
+                                Surface(
+                                    color = CardBackground,
+                                    shape = RoundedCornerShape(24.dp),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Column(modifier = Modifier.padding(24.dp)) {
+                                        Text(
+                                            text = "Cast",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                        Text(
+                                            text = movie.cast.joinToString(", "),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = Color.LightGray
                                         )
                                     }
                                 }

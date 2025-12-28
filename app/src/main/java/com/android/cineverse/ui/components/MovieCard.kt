@@ -236,26 +236,24 @@ fun MovieCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        // Display first genre if available
+                        movie.genres.firstOrNull()?.let { genre ->
+                            Text(
+                                text = genre,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.LightGray
+                            )
+                            Text(
+                                text = "•",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.LightGray
+                            )
+                        }
                         Text(
                             text = movie.releaseDate.take(4),
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.LightGray
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null,
-                                tint = Color.Yellow,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Text(
-                                text = movie.rating.toString(),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(start = 2.dp)
-                            )
-                        }
                     }
                 }
             }
